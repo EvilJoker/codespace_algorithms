@@ -1,0 +1,140 @@
+[
+  {
+    "Type": "bind",
+    "Source": "/mnt/ssd/1/version",
+    "Destination": "/home/version",
+    "Mode": "",
+    "RW": true,
+    "Propagation": "rprivate"
+  },
+  {
+    "Type": "bind",
+    "Source": "/mnt/ssd/1/share",
+    "Destination": "/home/share",
+    "Mode": "",
+    "RW": true,
+    "Propagation": "rprivate"
+  },
+  {
+    "Type": "bind",
+    "Source": "/mnt/ssd/1/swm",
+    "Destination": "/home/local",
+    "Mode": "",
+    "RW": true,
+    "Propagation": "rprivate"
+  },
+  {OAM_VMP_VerReqDebugModeEnable
+    "Type": "bind",
+    "Source": "/logs/oss",
+    "Destination": "/oss",
+    "Mode": "",
+    "RW": true,
+    "Propagation": "rprivate"
+  },
+  {
+    "Type": "bind",
+    "Source": "/mnt/ssd/1/share/ms",
+    "Destination": "/hotStandby/msMode",
+    "Mode": "",
+    "RW": true,
+    "Propagation": "rprivate"
+  },
+  {
+    "Type": "bind",
+    "Source": "/dev/shm/docker/container_bbx/swm-1-swm-0-rcm",
+    "Destination": "/dev/shm/container_bbx",
+    "Mode": "rw",
+    "RW": true,
+    "Propagation": "rprivate"
+  },
+  {
+    "Type": "bind",
+    "Source": "/lib",
+    "Destination": "/lib",
+    "Mode": "",
+    "RW": false,
+    "Propagation": "rprivate"
+  },
+  {
+    "Type": "bind",
+    "Source": "/tmp/rsyslogd",
+    "Destination": "/dev/log",
+    "Mode": "",
+    "RW": true,
+    "Propagation": "rprivate"
+  },
+  {
+    "Type": "bind",
+    "Source": "/var/luban/pods/1-swm-0/cpu_config",
+    "Destination": "/opt/cnrm",
+    "Mode": "",
+    "RW": true,
+    "Propagation": "rprivate"
+  },
+  {
+    "Type": "bind",
+    "Source": "/ramshare/luban",
+    "Destination": "/hotStandby/validNode",
+    "Mode": "",
+    "RW": true,
+    "Propagation": "rprivate"
+  },
+  {
+    "Type": "bind",
+    "Source": "/var/lib/logs/ttp_log/1-swm-0",
+    "Destination": "/ttp_log",
+    "Mode": "",
+    "RW": true,
+    "Propagation": "rprivate"
+  },
+  {
+    "Type": "volume",
+    "Name": "fc0a4de7de87021d62a8cc671e52ad253d4e641a431e113c3e44d4fa1a043557",
+    "Source": "/var/lib/docker/296608.296608/volumes/fc0a4de7de87021d62a8cc671e52ad253d4e641a431e113c3e44d4fa1a043557/_data",
+    "Destination": "/tmp/tmpinitcontaine",
+    "Driver": "local",
+    "Mode": "",
+    "RW": true,
+    "Propagation": ""
+  },
+  {
+    "Type": "bind",
+    "Source": "/mnt/flash/1/swm",
+    "Destination": "/home/flash",
+    "Mode": "",
+    "RW": true,
+    "Propagation": "rprivate"
+  },
+  {
+    "Type": "bind",
+    "Source": "/ramshare/ms",
+    "Destination": "/hotStandby/msState",
+    "Mode": "",
+    "RW": true,
+    "Propagation": "rprivate"
+  },
+  {
+    "Type": "bind",
+    "Source": "/zone",
+    "Destination": "/zone",
+    "Mode": "",
+    "RW": true,
+    "Propagation": "rprivate"
+  },
+  {
+    "Type": "bind",
+    "Source": "/tcfslib",
+    "Destination": "/tcfslib",
+    "Mode": "",
+    "RW": false,
+    "Propagation": "rprivate"
+  },
+  {
+    "Type": "bind",
+    "Source": "/var/luban/initcontainers/1-swm-0",
+    "Destination": "/tmp/tmpinitcontainer",
+    "Mode": "",
+    "RW": true,
+    "Propagation": "rprivate"
+  }
+]
