@@ -21,25 +21,29 @@ import (
  */
 
 func maxPathSum(root *TreeNode) int {
-	var maxsum = math.MinInt32
-	var dfs func(root *TreeNode) int
-	dfs = func(root *TreeNode) int {
-		if root == nil {
+	// 使用闭包来维护全局最大值
+	maxSum := math.MinInt32
+
+	// 定义递归函数，返回以当前节点为起点的最大路径和
+	var dfs func(*TreeNode) int
+	dfs = func(node *TreeNode) int {
+		if node == nil {
 			return 0
 		}
 
-		left := dfs(root.Left)
-		right := dfs(root.Right)
+		// 递归获取左右子树的最大路径和，如果为负则取0
+		leftSum := max(0, dfs(node.Left))
+		rightSum := max(0, dfs(node.Right))
 
-		// 当前节点能作为一条完整路径的“中心”
-		current := root.Val + max(0, left) + max(0, right)
-		maxsum = max(maxsum, current)
+		// 更新全局最大值：当前节点作为路径中心的情况
+		maxSum = max(maxSum, node.Val+leftSum+rightSum)
 
-		// 向父节点返回的贡献值（只能选择一边）
-		return root.Val + max(0, max(left, right))
+		// 返回以当前节点为起点的最大路径和（只能选择一边）
+		return node.Val + max(leftSum, rightSum)
 	}
+
 	dfs(root)
-	return maxsum
+	return maxSum
 }
 
 // @lc code=end

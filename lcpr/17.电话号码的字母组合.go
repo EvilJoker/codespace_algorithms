@@ -18,37 +18,41 @@ var phoneMap = map[string]string{
 	"8": "tuv",
 	"9": "wxyz",
 }
-var combinas []string
 
 func letterCombinations(digits string) []string {
-	// 组合，回溯
-	/* 1. hash 存储 kv 表
-	/* 2. 回溯框架:result, path
-	/* 3. 终止条件 判断是否满足 path 长度
-	*/
+	// 解题思路：
+	// 1. 使用哈希表存储数字对应的字母组合，便于快速查找
+	// 2. 使用回溯法生成所有可能的组合，通过递归实现
+	// 3. 对于每个数字，遍历其对应的所有字母，并与之前的结果组合
+	// 4. 时间复杂度：O(4^n)，其中n为输入数字的长度，最坏情况下每个数字对应4个字母
+	// 5. 空间复杂度：O(n)，递归调用栈的深度为n
+
+	// 处理空输入的情况
 	if len(digits) == 0 {
 		return []string{}
 	}
-	combinas = []string{}
-	pushback(digits, 0, "")
+	// 初始化结果数组
+	combinas := []string{}
+	// 开始回溯，从第一个数字开始，初始组合为空字符串
+	var pushback func(index int, combina string)
+	pushback = func(index int, combina string) {
+		// 当处理完所有数字时，将当前组合加入结果数组
+		if index == len(digits) {
+			combinas = append(combinas, combina)
+		}
+		// 获取当前数字对应的字母集合
+		letters, _ := phoneMap[string(digits[index])]
+
+		// 遍历当前数字对应的所有字母
+		for i := 0; i < len(letters); i++ {
+			// 递归处理下一个数字，将当前字母加入组合
+			pushback(index+1, combina+string(letters[i]))
+		}
+	}
+
+	pushback(0, "")
 
 	return combinas
-}
-
-func pushback(digits string, index int, combina string) {
-	// 加入
-	if len(digits) == index {
-		// 终止条件加入
-		combinas = append(combinas, combina)
-		return
-	}
-
-	letters, _ := phoneMap[string(digits[index])]
-
-	for i := 0; i < len(letters); i++ {
-		pushback(digits, index+1, combina+string(letters[i]))
-	}
-
 }
 
 // @lc code=end

@@ -4,15 +4,22 @@
  *
  * [35] 搜索插入位置
  */
+package main
 
 // @lc code=start
+// 二分查找
+// 思路：
+// 1. 使用二分查找在有序数组中查找目标值
+// 2. 如果找到目标值，直接返回其索引
+// 3. 如果没找到，left 指针会指向第一个大于目标值的位置，这就是应该插入的位置
+// 4. 时间复杂度：O(log n)，空间复杂度：O(1)
 func searchInsert(nums []int, target int) int {
-
-	/*sl 二分*/
 	n := len(nums)
 	left, right := 0, n-1
-	mid := (left-right)/2 + right
+
 	for left <= right {
+		mid := left + (right-left)/2 // 防止整数溢出的写法
+
 		if nums[mid] == target {
 			return mid
 		}
@@ -22,11 +29,9 @@ func searchInsert(nums []int, target int) int {
 		} else {
 			right = mid - 1
 		}
-		mid = (left-right)/2 + right
 	}
-	// 最终找到区间。将left 插入
-	return left
 
+	return left // 返回插入位置
 }
 
 // @lc code=end
@@ -45,4 +50,3 @@ func searchInsert(nums []int, target int) int {
 // @lcpr case=end
 
 */
-

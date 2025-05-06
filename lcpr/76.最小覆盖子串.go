@@ -11,57 +11,74 @@ import "math"
 // @lc code=start
 func minWindow(s string, t string) string {
 
-	// sl:滑动窗口. 先 根据t构造一个欠账的 map， 如果加入新元素，使得每项值都 >0 ，就说明包含
-	window := map[rune]int{}
+	/*
+		解题思路：滑动窗口
+		1. 使用map记录目标字符串t中每个字符的出现次数（初始为负值，表示"欠账"）
+		2. 使用双指针维护一个滑动窗口：
+		   - 右指针end向右移动，将遇到的字符加入window
+		   - 当window中所有字符的计数都>=0时，说明当前窗口包含了t的所有字符
+		   - 此时尝试收缩左指针start，直到不满足条件
+		3. 在收缩过程中记录最小覆盖子串的起始位置和长度
+		4. 时间复杂度：O(n)，空间复杂度：O(k)，其中n为s的长度，k为字符集大小
+	*/
+	// 初始化字符计数窗口
+	window := make(map[rune]int)
 
-	// 构造一个负值 window
-	for _, c := range t {
-		window[c]--
-
+	// 记录目标字符串中每个字符的"欠账"数量
+	for _, char := range t {
+		window[char]--
 	}
 
-	sr := []rune(s)
+	// 将输入字符串转换为rune切片以便处理Unicode字符
+	sRunes := []rune(s)
+	strLen := len(sRunes)
 
-	n := len(sr)
-	start, end := 0, 0
-	minstart, minend, minlen := 0, 0, math.MaxInt32
+	// 初始化滑动窗口的指针和结果变量
+	left, right := 0, 0
+	minStart, minLen := 0, math.MaxInt32
 
-	for ; end < n; end++ {
-		end_c := sr[end]
-		// 填充新元素
-		window[end_c]++
+	// 移动右指针扩展窗口
+	for right < strLen {
+		// 将右指针指向的字符加入窗口
+		window[sRunes[right]]++
 
-		// 不存在，继续右移
-		if !contain(window) {
+		// 如果当前窗口不满足条件，继续扩展
+		if !isWindowValid(window) {
+			right++
 			continue
 		}
 
-		// 当 window 满足条件时，尝试收缩左边界
-		for start <= end && contain(window) {
-			if end-start+1 < minlen {
-				// 更新逻辑
-				minstart = start
-				minlen = end - start + 1
+		// 当窗口满足条件时，尝试收缩左边界
+		for left <= right && isWindowValid(window) {
+			// 更新最小覆盖子串
+			windowSize := right - left + 1
+			if windowSize < minLen {
+				minStart = left
+				minLen = windowSize
 			}
-			start_c := sr[start]
-			window[start_c]--
-			start++
+
+			// 收缩左边界
+			window[sRunes[left]]--
+			left++
 		}
+		right++
 	}
-	if minlen == math.MaxInt32 {
+
+	// 处理未找到有效解的情况
+	if minLen == math.MaxInt32 {
 		return ""
 	}
-	return s[minstart : minend+1]
+
+	return s[minStart : minStart+minLen]
 }
 
-// 不包含
-func contain(dict map[rune]int) bool {
-	for _, v := range dict {
-		if v < 0 {
+// isWindowValid 检查当前窗口是否包含所有目标字符
+func isWindowValid(window map[rune]int) bool {
+	for _, count := range window {
+		if count < 0 {
 			return false
 		}
 	}
-
 	return true
 }
 

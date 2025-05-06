@@ -7,34 +7,32 @@
 package main
 
 // @lc code=start
+/*
+思路：
+1. 峰值定义：比相邻元素都大的元素
+2. 使用二分查找优化：
+   - 比较 mid 和 mid+1 元素
+   - 如果 nums[mid] > nums[mid+1]，说明峰值在左侧（包含mid）
+   - 如果 nums[mid] < nums[mid+1]，说明峰值在右侧
+3. 最终 left == right 时，即为峰值位置
+*/
 func findPeakElement(nums []int) int {
-	//sl: 比左右大的元素就是峰值，
-	//1. 顺序遍历
-	//2. 优化二分法 ：比较 mid 和邻居，如果
-	/*
-		a. 比左右高就是 mid 就是峰值
-		b. 如果num[ mid + 1] >num[ mid], 峰值在右
-		c. 反之 峰值在左
-	*/
 	left, right := 0, len(nums)-1
 
 	for left < right {
-
 		mid := left + (right-left)/2
 
 		if nums[mid] > nums[mid+1] {
-			// 峰值在左侧（包含 mid）
+			// 峰值在左侧（包含mid）
 			right = mid
 		} else {
 			// 峰值在右侧
 			left = mid + 1
 		}
-
 	}
 
-	// 最终 left ==right , 就是峰值索引
+	// 当 left == right 时，即为峰值位置
 	return left
-
 }
 
 // @lc code=end

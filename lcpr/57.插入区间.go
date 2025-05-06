@@ -10,38 +10,47 @@ import "sort"
 
 // @lc code=start
 func insert(intervals [][]int, newInterval []int) [][]int {
-	// 思路： 找到 区间改在的位置，新区间起点 大于 上一个区间的起点，小于 下一个区间的起点
-	// 1. 从位置 上一个区间开始合并
-	// 2. 2总关系： 上一个对下一个包含； 上一个对下一个重叠； 一直遍历结尾
+	/*
+	   解题思路：
+	   1. 将新区间加入原区间数组，并按区间起始点排序
+	   2. 遍历排序后的区间数组，处理区间合并的三种情况：
+	      - 当前区间被前一个区间完全包含
+	      - 当前区间与前一个区间有重叠
+	      - 当前区间与前一个区间完全独立
+	   3. 返回合并后的区间数组
+	*/
 
-	// 加入然后排序
+	// 将新区间加入原数组并排序
 	intervals = append(intervals, newInterval)
 	sort.Slice(intervals, func(i, j int) bool {
 		return intervals[i][0] < intervals[j][0]
 	})
 
-	// 从前到后合
-
+	// 初始化结果数组，将第一个区间加入
 	result := [][]int{intervals[0]}
 
+	// 遍历剩余区间进行合并
 	for i := 1; i < len(intervals); i++ {
-		last := result[len(result)-1]
-		cur := intervals[i]
-		// 被前者包含
-		if cur[1] <= last[1] {
+		lastInterval := result[len(result)-1] // 结果数组中的最后一个区间
+		currentInterval := intervals[i]       // 当前待处理的区间
+
+		// 情况1：当前区间被前一个区间完全包含
+		if currentInterval[1] <= lastInterval[1] {
 			continue
-		}
-		// 和前者重叠
-		if cur[0] <= last[1] && cur[1] >= last[1] {
-			last = []int{last[0], cur[1]}
-			result = append(result[:len(result)-1], last)
-			continue
-		}
-		if cur[0] > last[1] {
-			// 独立
-			result = append(result, cur)
 		}
 
+		// 情况2：当前区间与前一个区间有重叠
+		if currentInterval[0] <= lastInterval[1] && currentInterval[1] >= lastInterval[1] {
+			// 更新前一个区间的结束位置
+			lastInterval = []int{lastInterval[0], currentInterval[1]}
+			result[len(result)-1] = lastInterval
+			continue
+		}
+
+		// 情况3：当前区间与前一个区间完全独立
+		if currentInterval[0] > lastInterval[1] {
+			result = append(result, currentInterval)
+		}
 	}
 
 	return result

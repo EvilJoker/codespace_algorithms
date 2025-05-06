@@ -8,7 +8,16 @@ package main
 
 // @lc code=start
 func setZeroes(matrix [][]int) {
-	//sl: 矩阵置零，首行标记。额外的标志比较首行是否置零
+	/*
+		解题思路：
+		1. 使用矩阵的第一行和第一列作为标记数组
+		2. 使用两个额外的标志位setX和setY来标记第一行和第一列是否需要置零
+		3. 遍历矩阵，如果matrix[i][j]为0：
+		   - 将matrix[i][0]和matrix[0][j]置为0作为标记
+		4. 再次遍历矩阵，根据标记将对应行列置零
+		5. 最后根据setX和setY处理第一行和第一列
+		时间复杂度：O(m*n)，空间复杂度：O(1)
+	*/
 
 	setX, setY := false, false
 

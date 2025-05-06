@@ -16,28 +16,33 @@ package main
  * }
  */
 func sortedArrayToBST(nums []int) *TreeNode {
-	//sl: 二叉搜索树，左 < 根 < 右
-	// 初始化一个节点，然后不断新增节点，维护进去 -- 非平衡二叉是
-	// 平衡二叉树， 使用低估，每次将中间节点作为新的根节点
+	/*
+	   解题思路：
+	   1. 由于输入数组是有序的，要构建平衡二叉搜索树
+	   2. 每次选择数组中间元素作为根节点，可以保证左右子树节点数平衡
+	   3. 递归构建左右子树
+	*/
 
-	var dfs func(start, end int) *TreeNode
-
-	dfs = func(start, end int) *TreeNode {
-		// 结束匹配
-		if start > end {
+	var buildBST func(left, right int) *TreeNode
+	buildBST = func(left, right int) *TreeNode {
+		if left > right {
 			return nil
 		}
-		mid := (start-end)/2 + end // 中间节点作为最高节点
 
+		// 选择中间元素作为根节点
+		mid := left + (right-left)/2
+
+		// 构建当前节点
 		root := &TreeNode{Val: nums[mid]}
-		root.Left = dfs(start, mid-1)
-		root.Right = dfs(mid+1, end)
+
+		// 递归构建左右子树
+		root.Left = buildBST(left, mid-1)
+		root.Right = buildBST(mid+1, right)
 
 		return root
 	}
 
-	return dfs(0, len(nums)-1)
-
+	return buildBST(0, len(nums)-1)
 }
 
 // @lc code=end

@@ -16,17 +16,25 @@ package main
  * }
  */
 func hasPathSum(root *TreeNode, targetSum int) bool {
-	// sl : 递归，带 和递归，判断是否相等。 还得需要是叶子节点
+	/*
+	   解题思路：
+	   1. 使用递归遍历二叉树
+	   2. 每次递归时，用目标值减去当前节点的值
+	   3. 当到达叶子节点时，判断剩余值是否为0
+	   4. 如果存在一条路径使得路径和等于目标值，返回true
+	*/
 	if root == nil {
 		return false
 	}
 
-	if root.Val == targetSum && root.Left == nil && root.Right == nil {
-		return true
+	// 到达叶子节点时判断
+	if root.Left == nil && root.Right == nil {
+		return targetSum == root.Val
 	}
 
-	return hasPathSum(root.Left, targetSum-root.Val) || hasPathSum(root.Right, targetSum-root.Val)
-
+	// 递归判断左右子树
+	return hasPathSum(root.Left, targetSum-root.Val) ||
+		hasPathSum(root.Right, targetSum-root.Val)
 }
 
 // @lc code=end

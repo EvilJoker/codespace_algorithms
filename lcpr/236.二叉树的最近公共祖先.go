@@ -15,50 +15,40 @@ package main
  *     Right *TreeNode
  * }
  */
+/*
+思路：
+1. 递归遍历二叉树，对于每个节点，判断其是否包含p或q
+2. 如果当前节点为nil，返回nil
+3. 如果当前节点是p或q，返回当前节点
+4. 递归处理左右子树
+5. 根据左右子树的返回值判断：
+   - 如果左右子树都返回nil，说明当前子树不包含p和q
+   - 如果左右子树只有一个返回非nil，说明找到了p或q中的一个
+   - 如果左右子树都返回非nil，说明找到了p和q，当前节点就是最近公共祖先
+*/
+
 func lowestCommonAncestor(root, p, q *TreeNode) *TreeNode {
-	// sl: 包含 p. q 的最小树
-	// 肯定不包含
-	if root == nil {
-		return nil
-	}
-
-	// 包含一个时
-	if root == p || root == q {
-		return root
-	}
-	// 如果包含连个
-	left_node := lowestCommonAncestor(root.Left, p, q)
-	right_node := lowestCommonAncestor(root.Right, p, q)
-
-	// 肯定不包含的场景, 传递nil
-	if left_node == nil && right_node == nil {
-		return nil
-	}
-	// 只包含单节点, 传递目标节点
-	if (left_node == p || left_node == q) && right_node == nil {
-		return left_node
-	}
-
-	if (right_node == p || right_node == q) && left_node == nil {
-		return right_node
-	}
-
-	// 两个都包含, 找到了，传递不是nil ，也不是目标接的节点
-	if (left_node == p && right_node == q) || (right_node == p && left_node == q) {
+	// 基本情况：空节点或找到目标节点
+	if root == nil || root == p || root == q {
 		return root
 	}
 
-	// 直接向上传递
-	if left_node != nil && left_node != p && left_node != q {
-		return left_node
+	// 递归处理左右子树
+	left := lowestCommonAncestor(root.Left, p, q)
+	right := lowestCommonAncestor(root.Right, p, q)
+
+	// 如果左右子树都找到了目标节点，当前节点就是最近公共祖先
+	if left != nil && right != nil {
+		return root
 	}
 
-	if right_node != nil && right_node != p && right_node != q {
-		return right_node
+	// 如果只有左子树找到目标节点，返回左子树的结果
+	if left != nil {
+		return left
 	}
 
-	return nil
-
+	// 如果只有右子树找到目标节点，返回右子树的结果
+	return right
 }
 
 // @lc code=end

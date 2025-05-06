@@ -9,24 +9,40 @@ package main
 import "strings"
 
 // @lc code=start
+// 思路：使用双向映射判断模式匹配
+// 1. 将字符串s按空格分割成单词数组
+// 2. 使用两个map分别记录pattern字符和单词的映射关系
+// 3. 遍历pattern和单词数组，确保每个字符和单词的映射关系一致
+// 4. 使用索引+1作为映射值，避免0值冲突
 func wordPattern(pattern string, s string) bool {
-	// sl: 同构字符串，双向映射
-	dict1, dict2 := map[byte]int{}, map[string]int{}
+	// pattern字符到索引的映射
+	charToIndex := map[byte]int{}
+	// 单词到索引的映射
+	wordToIndex := map[string]int{}
 
-	strs := strings.Fields(s)
+	// 将字符串s分割成单词数组
+	words := strings.Fields(s)
 
-	n1, n2 := len(pattern), len(strs)
-	if n1 != n2 {
+	// 检查pattern和单词数组长度是否一致
+	if len(pattern) != len(words) {
 		return false
 	}
 
-	for i := 0; i < n1; i++ {
-		c1, s1 := pattern[i], strs[i]
-		if dict1[c1] != dict2[s1] {
+	// 遍历pattern和单词数组
+	for i := 0; i < len(pattern); i++ {
+		char := pattern[i]
+		word := words[i]
+
+		// 如果当前字符和单词的映射值不一致，说明不匹配
+		if charToIndex[char] != wordToIndex[word] {
 			return false
 		}
-		dict1[c1], dict2[s1] = i+1, i+1
+
+		// 更新映射值（使用索引+1避免0值冲突）
+		charToIndex[char] = i + 1
+		wordToIndex[word] = i + 1
 	}
+
 	return true
 }
 

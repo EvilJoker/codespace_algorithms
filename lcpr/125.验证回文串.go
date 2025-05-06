@@ -12,32 +12,44 @@ import (
 )
 
 // @lc code=start
+/*
+思路：
+1. 将字符串转换为小写，统一大小写处理
+2. 使用双指针从两端向中间移动
+3. 跳过非字母数字字符
+4. 比较左右指针指向的字符是否相同
+5. 如果不同则不是回文串，如果全部相同则是回文串
+*/
 func isPalindrome(s string) bool {
-	// *去除无效字符串
-
+	// 转换为小写，统一大小写处理
 	s = strings.ToLower(s)
 
-	runes := []rune(s)
-	left, right := 0, len(runes)-1
+	// 转换为rune切片，以正确处理Unicode字符
+	chars := []rune(s)
+	left, right := 0, len(chars)-1
 
+	// 双指针从两端向中间移动
 	for left < right {
-		if !unicode.IsDigit(runes[left]) && !unicode.IsLetter(runes[left]) {
+		// 跳过左侧非字母数字字符
+		if !unicode.IsDigit(chars[left]) && !unicode.IsLetter(chars[left]) {
 			left++
 			continue
 		}
-		if !unicode.IsDigit(runes[right]) && !unicode.IsLetter(runes[right]) {
+		// 跳过右侧非字母数字字符
+		if !unicode.IsDigit(chars[right]) && !unicode.IsLetter(chars[right]) {
 			right--
 			continue
 		}
-		if runes[left] != runes[right] {
+		// 比较左右指针指向的字符
+		if chars[left] != chars[right] {
 			return false
 		}
+		// 移动指针
 		left++
 		right--
 	}
 
 	return true
-
 }
 
 // @lc code=end

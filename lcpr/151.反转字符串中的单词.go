@@ -9,19 +9,27 @@ package main
 import "strings"
 
 // @lc code=start
+// 思路：
+// 1. 使用 strings.Fields 分割字符串，自动处理多余空格
+// 2. 从后向前遍历单词数组
+// 3. 将单词拼接成新字符串，注意处理空格
+// 4. 最后去除首尾空格
+
 func reverseWords(s string) string {
-	// sl: 先 spilit ,然后 翻转
-	strs := strings.Fields(s)
+	// 使用 Fields 分割字符串，自动处理多余空格
+	words := strings.Fields(s)
 
-	res := ""
+	// 存储结果
+	result := ""
 
-	for i := len(strs) - 1; i >= 0; i-- {
-		if strs[i] != " " {
-			res += strings.TrimSpace(strs[i]) + " "
-		}
+	// 从后向前遍历单词数组
+	for i := len(words) - 1; i >= 0; i-- {
+		// 拼接单词和空格
+		result += words[i] + " "
 	}
-	return strings.TrimSpace(res)
 
+	// 去除首尾空格并返回
+	return strings.TrimSpace(result)
 }
 
 // @lc code=end

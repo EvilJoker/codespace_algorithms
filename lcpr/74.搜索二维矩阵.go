@@ -10,7 +10,17 @@ package main
 // @lc code=start
 func searchMatrix(matrix [][]int, target int) bool {
 
-	//sl: 将二维映射成一维
+	/*
+		解题思路：二分查找
+		1. 将二维矩阵映射成一维数组：
+		   - 矩阵中的每个元素matrix[i][j]可以映射到一维数组的index = i*col + j
+		   - 一维数组的index可以映射回矩阵的i = index/col, j = index%col
+		2. 在一维数组上进行二分查找：
+		   - 左边界left = 0
+		   - 右边界right = row*col-1
+		   - 中间位置mid = (left+right)/2
+		3. 时间复杂度：O(log(m*n))，空间复杂度：O(1)
+	*/
 
 	row, col := len(matrix), len(matrix[0])
 	left, right := 0, row*col-1

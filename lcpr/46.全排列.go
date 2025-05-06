@@ -8,34 +8,45 @@ package main
 
 // @lc code=start
 func permute(nums []int) [][]int {
-	//sl ： 排列是有顺序的，
+	// 解题思路：
+	// 1. 使用回溯算法，通过DFS遍历所有可能的排列
+	// 2. 使用used map记录已使用的数字，避免重复使用
+	// 3. 当path长度等于nums长度时，表示找到一个完整排列
+	// 4. 每次选择未使用的数字加入path，递归后回溯
+	// 时间复杂度：O(n!)，空间复杂度：O(n)
 
 	result := [][]int{}
-
 	n := len(nums)
 
+	// 定义DFS函数，path记录当前路径，used记录已使用的数字
 	var dfs func(path []int, used map[int]bool)
-
 	dfs = func(path []int, used map[int]bool) {
-		// 到结尾
+		// 找到一个完整排列
 		if len(path) == n {
+			// 创建path的副本并加入结果集
 			tmp := make([]int, n)
 			copy(tmp, path)
 			result = append(result, tmp)
 			return
 		}
 
-		for _, v := range nums {
-			if _, ok := used[v]; ok {
+		// 遍历所有数字
+		for _, num := range nums {
+			// 跳过已使用的数字
+			if _, exists := used[num]; exists {
 				continue
 			}
-			used[v] = true
-			dfs(append(path, v), used)
-			// 回溯，撤销选择. 或者copy
-			delete(used, v)
+
+			// 选择当前数字
+			used[num] = true
+			// 递归搜索
+			dfs(append(path, num), used)
+			// 回溯，撤销选择
+			delete(used, num)
 		}
 	}
 
+	// 从空路径开始搜索
 	dfs([]int{}, map[int]bool{})
 	return result
 }

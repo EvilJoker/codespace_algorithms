@@ -7,17 +7,22 @@
 package main
 
 // @lc code=start
+// 思路：使用哈希表记录每个数字最后一次出现的位置
+// 遍历数组时，如果当前数字在哈希表中存在，且当前位置与上次出现位置的距离不超过k，则返回true
+// 否则更新哈希表中该数字的位置为当前位置
 func containsNearbyDuplicate(nums []int, k int) bool {
-	dict := map[int]int{}
+	// lastPos 记录每个数字最后一次出现的位置
+	lastPos := map[int]int{}
 
-	for i, v := range nums {
-		index := dict[v]
-		if index != 0 && i-index+1 <= k {
+	for i, num := range nums {
+		// 获取当前数字上次出现的位置
+		lastIndex := lastPos[num]
+		// 如果数字之前出现过，且距离不超过k，返回true
+		if lastIndex != 0 && i-lastIndex+1 <= k {
 			return true
 		}
-
-		// 规避 0值
-		dict[v] = i + 1
+		// 更新数字的最后出现位置
+		lastPos[num] = i + 1
 	}
 	return false
 }

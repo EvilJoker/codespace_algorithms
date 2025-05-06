@@ -8,8 +8,6 @@ package main
 
 // @lc code=start
 
-import "sort"
-
 var dict1 map[int]string = map[int]string{
 	1:    "I",
 	4:    "IV",
@@ -27,25 +25,19 @@ var dict1 map[int]string = map[int]string{
 }
 
 func intToRoman(num int) string {
-	// 思路： 贪心，不断取最大
+	// 思路：贪心算法，从大到小遍历罗马数字对应的值
+	// 时间复杂度：O(1)，空间复杂度：O(1)
 
-	keys := []int{}
-	for key := range dict1 {
-		keys = append(keys, key)
-	}
-	sort.Ints(keys) // 从小到大
-	n := len(keys)
+	// 预定义罗马数字对应的值数组，按从大到小排序
+	values := []int{1000, 900, 500, 400, 100, 90, 50, 40, 10, 9, 5, 4, 1}
 
 	res := ""
 	for num > 0 {
-		for i := n - 1; i >= 0; {
-			val := keys[i]
-			str, _ := dict1[val]
+		for _, val := range values {
 			if num >= val {
-				res += str
+				res += dict1[val]
 				num -= val
-			} else {
-				i--
+				break // 找到当前最大可用的值后，重新开始遍历
 			}
 		}
 	}

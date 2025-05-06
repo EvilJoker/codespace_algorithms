@@ -18,31 +18,42 @@ package main
 
 import "math"
 
+// 思路：
+// 1. 二叉搜索树的中序遍历结果是一个升序数组
+// 2. 最小绝对差一定出现在相邻节点之间
+// 3. 使用中序遍历，记录前一个节点，计算当前节点与前一个节点的差值
+// 4. 维护最小差值
+
 func getMinimumDifference(root *TreeNode) int {
-	//sl : 2叉搜索树的概念： 父节点大于左、小于右 --z中序遍历是一个升序数组，比较当前节点和上一个节点差值即可
+	// 初始化最小差值为最大整数
+	minDiff := math.MaxInt16
+	// 记录前一个访问的节点
+	var prevNode *TreeNode
 
-	minDif := math.MaxInt16
-	var pre *TreeNode
+	// 定义中序遍历函数
 	var inorder func(node *TreeNode)
-
 	inorder = func(node *TreeNode) {
 		if node == nil {
 			return
 		}
 
+		// 先遍历左子树
 		inorder(node.Left)
-		if pre != nil {
-			minDif = min(node.Val-pre.Val, minDif)
 
+		// 计算当前节点与前一个节点的差值
+		if prevNode != nil {
+			minDiff = min(node.Val-prevNode.Val, minDiff)
 		}
-		pre = node
+
+		// 更新前一个节点
+		prevNode = node
+
+		// 遍历右子树
 		inorder(node.Right)
-
 	}
+
 	inorder(root)
-
-	return minDif
-
+	return minDiff
 }
 
 // @lc code=end

@@ -14,19 +14,23 @@ func generateParenthesis(n int) []string {
 
 	var dfs func(path string, left int, right int) // 左右括号可用数
 	dfs = func(path string, left int, right int) {
+		//当左右括号都用完，说明生成了一个合法组合
 		if left == 0 && right == 0 {
 			result = append(result, path)
 			return
 		}
+		// 非法状态，某个剩余的为0 都不可用
 		if left < 0 || right < 0 {
 			return
 		}
+		// 非法状态
 		if right < left { // 右括号比左括号用的多
 			return
 		}
 
+		// 尝试加左括号
 		dfs(path+"(", left-1, right)
-
+		// 尝试 右括号
 		dfs(path+")", left, right-1)
 
 	}

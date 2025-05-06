@@ -9,40 +9,49 @@ package main
 
 // @lc code=start
 func minPathSum(grid [][]int) int {
-	// 思路：二维动态规划
-	/*
-		1. dp[i][j] 从左上角触发，到当前的最短路径
-		2. 初始值： dp[i][0]，都是横向或竖向的值
-		3. 递推： dp[i][j]= min(dp[i-1][j],dp[i][j-1])+ grid[i][j]
+	/* 解题思路：动态规划
+	1. 定义dp数组：dp[i][j]表示从左上角(0,0)到位置(i,j)的最小路径和
+	2. 初始化：
+	   - dp[0][0] = grid[0][0]
+	   - 第一行：dp[0][j] = dp[0][j-1] + grid[0][j]
+	   - 第一列：dp[i][0] = dp[i-1][0] + grid[i][0]
+	3. 状态转移：
+	   - dp[i][j] = min(dp[i-1][j], dp[i][j-1]) + grid[i][j]
+	   表示当前位置的最小路径和等于上方和左方较小值加上当前位置的值
+	4. 最终结果：返回dp[m-1][n-1]
 	*/
 
-	row := len(grid)
-	col := len(grid[0])
+	// 获取网格的行数和列数
+	m, n := len(grid), len(grid[0])
 
-	dp := make([][]int, row)
-	for i := 0; i < row; i++ {
-		dp[i] = make([]int, col)
+	// 初始化动态规划数组，dp[i][j]表示从(0,0)到(i,j)的最小路径和
+	dp := make([][]int, m)
+	for i := range dp {
+		dp[i] = make([]int, n)
 	}
-	// 初始值
+
+	// 初始化起点
 	dp[0][0] = grid[0][0]
-	for i := 1; i < row; i++ {
+
+	// 初始化第一列：只能从上往下走
+	for i := 1; i < m; i++ {
 		dp[i][0] = dp[i-1][0] + grid[i][0]
 	}
 
-	for j := 1; j < col; j++ {
+	// 初始化第一行：只能从左往右走
+	for j := 1; j < n; j++ {
 		dp[0][j] = dp[0][j-1] + grid[0][j]
 	}
-	//递推
 
-	for i := 1; i < row; i++ {
-		for j := 1; j < col; j++ {
-
+	// 动态规划递推：每个位置的最小路径和等于上方和左方较小值加上当前位置的值
+	for i := 1; i < m; i++ {
+		for j := 1; j < n; j++ {
 			dp[i][j] = min(dp[i-1][j], dp[i][j-1]) + grid[i][j]
-
 		}
 	}
 
-	return dp[row-1][col-1]
+	// 返回右下角的最小路径和
+	return dp[m-1][n-1]
 
 }
 

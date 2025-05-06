@@ -4,6 +4,7 @@
  *
  * [80] 删除有序数组中的重复项 II
  */
+package main
 
 // @lc code=start
 func removeDuplicates(nums []int) int {
@@ -39,4 +40,3 @@ func removeDuplicates(nums []int) int {
 // @lcpr case=end
 
 */
-

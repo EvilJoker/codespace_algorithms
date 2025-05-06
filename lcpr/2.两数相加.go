@@ -16,24 +16,32 @@ package main
  * }
  */
 func addTwoNumbers(l1 *ListNode, l2 *ListNode) *ListNode {
+	/*
+		解题思路：
+		1. 使用虚拟头节点简化链表操作
+		2. 设置进位变量up，初始为0
+		3. 同时遍历两个链表，对应节点相加并处理进位
+		4. 处理较长的链表剩余部分
+		5. 最后检查是否还有进位需要处理
+	*/
 
-	// sl: 设置进位，节点依次相加。
-	up := 0
+	// 创建虚拟头节点，简化链表操作
 	dummy := &ListNode{}
 	pre := dummy
+	up := 0 // 进位变量
+
+	// 同时遍历两个链表，对应节点相加
 	for l1 != nil && l2 != nil {
 		sum := up + l1.Val + l2.Val
-		up = sum / 10
-		val := sum % 10
-		// 新节点
-		pre.Next = &ListNode{Val: val}
-		pre = pre.Next
-		// 跟心
-		l1 = l1.Next
+		up = sum / 10                  // 计算进位
+		val := sum % 10                // 计算当前位值
+		pre.Next = &ListNode{Val: val} // 创建新节点
+		pre = pre.Next                 // 移动指针
+		l1 = l1.Next                   // 移动链表指针
 		l2 = l2.Next
 	}
-	// 还有未结束的值
 
+	// 处理l1剩余部分
 	for l1 != nil {
 		sum := up + l1.Val
 		up = sum / 10
@@ -43,6 +51,7 @@ func addTwoNumbers(l1 *ListNode, l2 *ListNode) *ListNode {
 		l1 = l1.Next
 	}
 
+	// 处理l2剩余部分
 	for l2 != nil {
 		sum := up + l2.Val
 		up = sum / 10
@@ -52,12 +61,12 @@ func addTwoNumbers(l1 *ListNode, l2 *ListNode) *ListNode {
 		l2 = l2.Next
 	}
 
+	// 处理最后的进位
 	if up != 0 {
 		pre.Next = &ListNode{Val: up}
 	}
 
 	return dummy.Next
-
 }
 
 // @lc code=end
