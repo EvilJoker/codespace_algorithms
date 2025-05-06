@@ -10,68 +10,89 @@ import "strings"
 
 // @lc code=start
 func fullJustify(words []string, maxWidth int) []string {
-	// sl: 先尽可能塞单词，塞不下时，计算间隔。
+	/*
+	   解题思路：
+	   1. 贪心算法：尽可能多地放置单词，直到放不下为止
+	   2. 对于每一行：
+	      - 计算可以放置的单词数量
+	      - 计算剩余空间，用于分配空格
+	      - 如果是最后一行，则左对齐
+	      - 否则，均匀分配空格（左侧空格数可以比右侧多）
+	   3. 特殊情况处理：
+	      - 只有一个单词时左对齐
+	      - 最后一行左对齐
+	*/
+
 	start, end, leftWidth := 0, 0, maxWidth
-	res := []string{}
+	result := []string{}
+
+	// 遍历所有单词
 	for end < len(words) {
+		// 如果当前单词放不下且不是第一个单词，则处理当前行
 		if leftWidth < len(words[end]) && end > start {
-			// 塞不下，切换新一行
-			res = append(res, fullblack(words, start, end-1, maxWidth))
+			result = append(result, formatLine(words, start, end-1, maxWidth))
 			leftWidth = maxWidth
 			start = end
 			continue
 		}
 
-		// 能塞下
-		leftWidth -= (len(words[end]) + 1)
-
+		// 能放下当前单词，更新剩余宽度
+		leftWidth -= (len(words[end]) + 1) // +1 是为了单词间的空格
 		end++
-
 	}
 
 	// 处理最后一行（左对齐）
 	if start < len(words) {
-		res = append(res, fullblack(words, start, len(words)-1, maxWidth))
+		result = append(result, formatLine(words, start, len(words)-1, maxWidth))
 	}
 
-	return res
-
+	return result
 }
 
-func fullblack(words []string, start, end, maxWidth int) string {
+// formatLine 格式化一行文本
+func formatLine(words []string, start, end, maxWidth int) string {
+	// 计算当前行的单词数
+	wordCount := end - start + 1
 
-	n := end - start + 1
-
-	leftWidths := maxWidth
+	// 计算所有单词的总长度
+	totalWordLength := 0
 	for i := start; i <= end; i++ {
-		leftWidths -= len(words[i])
+		totalWordLength += len(words[i])
 	}
 
-	// 最后一行|| 只有一个单词时
+	// 计算需要分配的空格数
+	totalSpaces := maxWidth - totalWordLength
 
-	if end == len(words)-1 || n == 1 {
-		return strings.Join(words[start:end+1], " ") + strings.Repeat(" ", leftWidths-n+1)
+	// 处理特殊情况：最后一行或只有一个单词时左对齐
+	if end == len(words)-1 || wordCount == 1 {
+		return strings.Join(words[start:end+1], " ") + strings.Repeat(" ", totalSpaces-wordCount+1)
 	}
 
-	basespaces := leftWidths / (n - 1)
-	headspaces := leftWidths % (n - 1)
+	// 计算基础空格数和额外空格数
+	baseSpaces := totalSpaces / (wordCount - 1)  // 每个间隔的基础空格数
+	extraSpaces := totalSpaces % (wordCount - 1) // 需要额外分配的空格数
 
-	// 多个单词，均匀分布，左比右舵
-	res := ""
+	// 构建格式化后的行
+	var result strings.Builder
 	for i := start; i <= end; i++ {
+		result.WriteString(words[i])
 
-		res += words[i]
+		// 最后一个单词后不需要加空格
 		if i == end {
 			continue
 		}
-		res += strings.Repeat(" ", basespaces)
-		if headspaces > 0 {
-			res += " "
-			headspaces -= 1
-		}
 
+		// 添加基础空格
+		result.WriteString(strings.Repeat(" ", baseSpaces))
+
+		// 分配额外空格（优先分配给左侧间隔）
+		if extraSpaces > 0 {
+			result.WriteString(" ")
+			extraSpaces--
+		}
 	}
-	return res
+
+	return result.String()
 }
 
 // @lc code=end

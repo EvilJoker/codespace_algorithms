@@ -9,37 +9,49 @@ package main
 import "sort"
 
 // @lc code=start
+/*
+思路：
+1. 贪心算法：将气球按照左边界排序，然后从左到右遍历
+2. 维护一个当前箭可以射中的区间范围 [maxLeft, minRight]
+3. 当遇到新的气球时：
+   - 如果新气球的左边界 > 当前区间右边界，说明需要新的箭
+   - 否则，更新当前区间范围，取交集
+*/
 func findMinArrowShots(points [][]int) int {
-	// sl：贪心，对区间排列后，从左到右移动剑，当脱离一个气球的范围时，那么就该增加一只箭了
-
-	n := len(points)
-	if n == 0 {
+	// 处理空数组情况
+	if len(points) == 0 {
 		return 0
 	}
 
+	// 按左边界排序
 	sort.Slice(points, func(i, j int) bool {
 		return points[i][0] < points[j][0]
 	})
 
-	count := 1
-	max_left, min_right := points[0][0], points[0][1] // 最大的左右边界
-	// 开始
+	// 初始化第一支箭的区间范围
+	arrowCount := 1
+	currentLeft := points[0][0]
+	currentRight := points[0][1]
 
-	for i := 1; i < n; i++ {
-		left, right := points[i][0], points[i][1]
+	// 遍历所有气球
+	for i := 1; i < len(points); i++ {
+		balloonLeft := points[i][0]
+		balloonRight := points[i][1]
 
-		if left > min_right { // 超出之前的边界
-			count++
-			max_left = left
-			min_right = right
+		// 当前气球与箭的区间无重叠，需要新的箭
+		if balloonLeft > currentRight {
+			arrowCount++
+			currentLeft = balloonLeft
+			currentRight = balloonRight
 			continue
 		}
 
-		max_left = max(max_left, left)
-		min_right = min(min_right, right)
+		// 更新当前箭的区间范围（取交集）
+		currentLeft = max(currentLeft, balloonLeft)
+		currentRight = min(currentRight, balloonRight)
 	}
 
-	return count
+	return arrowCount
 }
 
 // @lc code=end

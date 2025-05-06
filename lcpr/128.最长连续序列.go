@@ -6,51 +6,43 @@
  */
 package main
 
-import (
-	"math"
-	"sort"
-)
-
 // @lc code=start
+// 思路：
+// 1. 使用哈希表记录所有数字，用于快速查找
+// 2. 对于每个数字，如果它是连续序列的起点（即num-1不在哈希表中），则从它开始向后查找连续序列
+// 3. 记录最长连续序列的长度
 func longestConsecutive(nums []int) int {
-	//sl: 先排序，然后 从最小值，开始累加。利用hash 判断存不存在，不存在就 +1
-
 	if len(nums) == 0 {
 		return 0
 	}
-	sort.Ints(nums)
 
-	visted := map[int]bool{}
-	for _, v := range nums {
-		visted[v] = false
+	// 使用哈希表存储所有数字
+	numSet := make(map[int]bool)
+	for _, num := range nums {
+		numSet[num] = true
 	}
 
-	n, maxlen := len(nums), math.MinInt32
+	maxLength := 0
 
-	for i := 0; i < n; i++ {
-		cur := nums[i]
-		count := 1
-		for {
-			v, exist := visted[cur]
+	// 遍历每个数字
+	for num := range numSet {
+		// 如果当前数字是连续序列的起点
+		if !numSet[num-1] {
+			currentNum := num
+			currentLength := 1
 
-			// 不存在
-			if !exist {
-				break
+			// 向后查找连续序列
+			for numSet[currentNum+1] {
+				currentNum++
+				currentLength++
 			}
-			// 访问过
-			if v {
-				break
-			}
-			maxlen = max(maxlen, count)
-			count++
 
-			visted[cur] = true // 标识访问过
-			cur++
+			// 更新最长序列长度
+			maxLength = max(maxLength, currentLength)
 		}
 	}
 
-	return maxlen
-
+	return maxLength
 }
 
 // @lc code=end

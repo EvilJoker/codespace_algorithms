@@ -7,29 +7,35 @@
 package main
 
 // @lc code=start
+/*
+思路：
+1. 对于数组中的每个位置i，我们需要计算除了nums[i]之外所有数的乘积
+2. 可以将问题分解为：每个位置的答案 = 左边所有数的乘积 * 右边所有数的乘积
+3. 使用两次遍历：
+   - 第一次从左到右计算每个位置左边所有数的乘积
+   - 第二次从右到左计算每个位置右边所有数的乘积
+4. 最后将左右乘积相乘得到最终结果
+*/
 func productExceptSelf(nums []int) []int {
-	//*思路： 数可以等于两边数的乘积。左右两次遍历，计算乘积
 	n := len(nums)
-	lefts, rights := []int{nums[0]}, []int{nums[n-1]}
+	// leftProducts[i] 表示位置i左边所有数的乘积
+	leftProducts := make([]int, n)
+	leftProducts[0] = 1 // 第一个数左边没有数，乘积为1
+
+	// 计算左边乘积
 	for i := 1; i < n; i++ {
-		lefts = append(lefts, nums[i]*lefts[i-1])
-		rights = append(rights, nums[n-1-i]*rights[i-1])
+		leftProducts[i] = leftProducts[i-1] * nums[i-1]
 	}
 
-	res := []int{}
-	for i := 0; i < n; i++ {
-		// 左边的数
-		left, right := 1, 1
-		if i-1 >= 0 {
-			left = lefts[i-1]
-		}
-		// 右边的数
-		if n-i-2 >= 0 {
-			right = rights[n-i-2]
-		}
-		res = append(res, left*right)
+	// rightProduct 表示当前位置右边所有数的乘积
+	rightProduct := 1
+	// 从右向左遍历，同时计算最终结果
+	for i := n - 1; i >= 0; i-- {
+		leftProducts[i] = leftProducts[i] * rightProduct
+		rightProduct *= nums[i]
 	}
-	return res
+
+	return leftProducts
 }
 
 // @lc code=end

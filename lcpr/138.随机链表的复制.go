@@ -23,28 +23,33 @@ type node struct {
  */
 
 func copyRandomList(head *node) *node {
-	// sl: 使用hash 两次遍历
+	// 创建虚拟头节点，简化链表操作
 	dummy := &node{Next: head}
+	// 存储原节点到新节点的映射关系
+	nodeMap := map[*node]*node{}
 
-	dict := map[*node]*node{}
-
-	pre := dummy
-	cur := head
-
-	for cur != nil {
-		newnode := &node{Val: cur.Val, Next: cur.Next, Random: cur.Random}
-		dict[cur] = newnode
-		cur = cur.Next
-		pre.Next = newnode
-		pre = pre.Next
+	// 第一次遍历：创建新节点
+	prev := dummy
+	curr := head
+	for curr != nil {
+		// 创建新节点，复制值
+		newNode := &node{Val: curr.Val}
+		// 建立映射关系
+		nodeMap[curr] = newNode
+		// 更新链表
+		prev.Next = newNode
+		prev = newNode
+		curr = curr.Next
 	}
 
-	pre = dummy.Next
-	for pre != nil {
-		if pre.Random != nil {
-			pre.Random = dict[pre.Random]
+	// 第二次遍历：设置Random指针
+	curr = dummy.Next
+	for curr != nil {
+		if curr.Random != nil {
+			// 通过映射关系找到对应的新节点
+			curr.Random = nodeMap[curr.Random]
 		}
-		pre = pre.Next
+		curr = curr.Next
 	}
 
 	return dummy.Next

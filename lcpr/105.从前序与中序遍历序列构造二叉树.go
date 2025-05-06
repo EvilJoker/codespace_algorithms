@@ -16,28 +16,35 @@ package main
  * }
  */
 func buildTree(preorder []int, inorder []int) *TreeNode {
-	//sl: 中序遍历确定分割点。 前序后续，确定头节点
-	n := len(inorder)
-	if n <= 0 {
+	// 前序遍历: 根 -> 左 -> 右
+	// 中序遍历: 左 -> 根 -> 右
+	// 1. 前序遍历的第一个元素是根节点
+	// 2. 在中序遍历中找到根节点的位置，左边是左子树，右边是右子树
+	// 3. 递归构建左右子树
+
+	if len(preorder) == 0 || len(inorder) == 0 {
 		return nil
 	}
-	root := preorder[0]
 
-	indexIn := findInex(inorder, root)
+	// 获取根节点值
+	rootVal := preorder[0]
+	root := &TreeNode{Val: rootVal}
 
-	leftLength := indexIn
+	// 在中序遍历中找到根节点的位置
+	rootIndex := findIndex(inorder, rootVal)
 
-	leftNode, rightNode := buildTree(preorder[1:leftLength+1], inorder[0:leftLength]),
-		buildTree(preorder[leftLength+1:n], inorder[leftLength+1:n])
+	// 递归构建左右子树
+	// 左子树: 前序遍历[1:rootIndex+1], 中序遍历[0:rootIndex]
+	// 右子树: 前序遍历[rootIndex+1:], 中序遍历[rootIndex+1:]
+	root.Left = buildTree(preorder[1:rootIndex+1], inorder[:rootIndex])
+	root.Right = buildTree(preorder[rootIndex+1:], inorder[rootIndex+1:])
 
-	rootNode := &TreeNode{Val: root, Left: leftNode, Right: rightNode}
-	return rootNode
-
+	return root
 }
 
-func findInex(order []int, target int) int {
-	for i, v := range order {
-		if v == target {
+func findIndex(nums []int, target int) int {
+	for i, num := range nums {
+		if num == target {
 			return i
 		}
 	}

@@ -7,48 +7,58 @@
 package main
 
 // @lc code=start
+
+// 解题思路：
+// 1. 使用前缀树(Trie)数据结构来存储单词
+// 2. 每个节点包含26个子节点，对应26个字母
+// 3. 节点中的val标记是否为单词结尾
+// 4. 搜索时支持通配符'.'，需要遍历所有可能的子节点
+
+// WordDictionary 前缀树节点结构
 type WordDictionary struct {
-	val  bool
-	dict [26]*WordDictionary
+	isEnd    bool                // 标记是否为单词结尾
+	children [26]*WordDictionary // 子节点数组，对应26个字母
 }
 
+// Constructor 初始化前缀树
 func Constructor() WordDictionary {
 	return WordDictionary{}
 }
 
+// AddWord 添加单词到前缀树
 func (this *WordDictionary) AddWord(word string) {
-	cur := this
-	for _, c := range word {
-		idx := c - 'a'
-		if cur.dict[idx] == nil {
-			cur.dict[idx] = &WordDictionary{}
+	node := this
+	for _, ch := range word {
+		idx := ch - 'a'
+		if node.children[idx] == nil {
+			node.children[idx] = &WordDictionary{}
 		}
-		cur = cur.dict[idx]
+		node = node.children[idx]
 	}
-
-	cur.val = true
-
+	node.isEnd = true
 }
 
+// Search 搜索单词
+// 支持通配符'.'，可以匹配任意字母
 func (this *WordDictionary) Search(word string) bool {
 	if this == nil {
 		return false
 	}
 	if len(word) == 0 {
-		return this.val
+		return this.isEnd
 	}
 
-	c := word[0]
-
-	if c != '.' {
-		idx := c - 'a'
-		if this.dict[idx] == nil {
+	ch := word[0]
+	if ch != '.' {
+		// 精确匹配
+		idx := ch - 'a'
+		if this.children[idx] == nil {
 			return false
 		}
-		return this.dict[idx].Search(word[1:])
+		return this.children[idx].Search(word[1:])
 	} else {
-		for _, child := range this.dict {
-			// 命中
+		// 通配符匹配，遍历所有子节点
+		for _, child := range this.children {
 			if child != nil && child.Search(word[1:]) {
 				return true
 			}
@@ -69,5 +79,4 @@ func (this *WordDictionary) Search(word string) bool {
 // @lcpr case=start
 // ["WordDictionary","addWord","addWord","addWord","search","search","search","search"]\n[[],["bad"],["dad"],["mad"],["pad"],["bad"],[".ad"],["b.."]]\n
 // @lcpr case=end
-
 */

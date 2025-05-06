@@ -7,41 +7,56 @@
 package main
 
 // @lc code=start
+/*
+思路：
+1. 从边界开始DFS，找到所有与边界相连的'O'，这些'O'不会被包围
+2. 将这些不会被包围的'O'临时标记为'W'
+3. 最后遍历整个board：
+   - 将剩余的'O'（被包围的）改为'X'
+   - 将'W'（不被包围的）改回'O'
+*/
+
 func solve(board [][]byte) {
+	// 处理空board的情况
 	if len(board) == 0 || len(board[0]) == 0 {
 		return
 	}
 	rows, cols := len(board), len(board[0])
 
-	var dfs func(int, int)
-	dfs = func(i, j int) {
-		if i < 0 || i >= rows || j < 0 || j >= cols || board[i][j] != 'O' {
+	// DFS函数：标记与边界相连的'O'
+	var markUnsurrounded func(int, int)
+	markUnsurrounded = func(row, col int) {
+		// 越界或不是'O'则返回
+		if row < 0 || row >= rows || col < 0 || col >= cols || board[row][col] != 'O' {
 			return
 		}
-		board[i][j] = 'W' // 临时标记为不会被包围的
-		dfs(i-1, j)
-		dfs(i+1, j)
-		dfs(i, j-1)
-		dfs(i, j+1)
+		// 标记为不会被包围的'O'
+		board[row][col] = 'W'
+		// 向四个方向继续搜索
+		markUnsurrounded(row-1, col) // 上
+		markUnsurrounded(row+1, col) // 下
+		markUnsurrounded(row, col-1) // 左
+		markUnsurrounded(row, col+1) // 右
 	}
 
-	// 从边界的 O 开始 DFS
+	// 从边界开始DFS
 	for i := 0; i < rows; i++ {
-		dfs(i, 0)
-		dfs(i, cols-1)
+		markUnsurrounded(i, 0)      // 左边界
+		markUnsurrounded(i, cols-1) // 右边界
 	}
 	for j := 0; j < cols; j++ {
-		dfs(0, j)
-		dfs(rows-1, j)
+		markUnsurrounded(0, j)      // 上边界
+		markUnsurrounded(rows-1, j) // 下边界
 	}
 
-	// 再遍历整个 board，处理剩下的
+	// 处理所有格子
 	for i := 0; i < rows; i++ {
 		for j := 0; j < cols; j++ {
-			if board[i][j] == 'O' {
-				board[i][j] = 'X' // 被包围的
-			} else if board[i][j] == 'W' {
-				board[i][j] = 'O' // 不被包围的
+			switch board[i][j] {
+			case 'O':
+				board[i][j] = 'X' // 被包围的'O'改为'X'
+			case 'W':
+				board[i][j] = 'O' // 不被包围的'W'改回'O'
 			}
 		}
 	}

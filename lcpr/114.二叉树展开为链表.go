@@ -15,17 +15,29 @@ package main
  *     Right *TreeNode
  * }
  */
-
 func flatten(root *TreeNode) {
-	//sl: 前序遍历 root,保存在数组，然后拼接
-	nodes := &[]*TreeNode{}
-	preorder(root, nodes)
-	dummy := &TreeNode{Right: root}
-	for _, node := range *nodes {
-		dummy.Right = node
-		dummy.Left = nil
-		dummy = dummy.Right
+	/*
+	   解题思路：
+	   1. 使用前序遍历收集所有节点
+	   2. 将收集到的节点重新连接成链表
+	   3. 每个节点的左子树置为nil，右子树指向下一个节点
+	*/
+	if root == nil {
+		return
 	}
+
+	// 收集前序遍历的节点
+	nodes := make([]*TreeNode, 0)
+	preorder(root, &nodes)
+
+	// 重新连接节点
+	for i := 0; i < len(nodes)-1; i++ {
+		nodes[i].Left = nil
+		nodes[i].Right = nodes[i+1]
+	}
+	// 处理最后一个节点
+	nodes[len(nodes)-1].Left = nil
+	nodes[len(nodes)-1].Right = nil
 }
 
 func preorder(root *TreeNode, nodes *[]*TreeNode) {
@@ -33,7 +45,6 @@ func preorder(root *TreeNode, nodes *[]*TreeNode) {
 		return
 	}
 	*nodes = append(*nodes, root)
-	// 先序遍历
 	preorder(root.Left, nodes)
 	preorder(root.Right, nodes)
 }

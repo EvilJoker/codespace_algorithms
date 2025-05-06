@@ -1,12 +1,12 @@
 /*
- * @lc app=leetcode.cn id=217 lang=golang
+ * @lc app=leetcode.cn id=7 lang=golang
  * @lcpr version=
  *
- * [217] 存在重复元素
+ * [7] 整数反转
  */
 
 // @lc code=start
-func containsDuplicate(nums []int) bool {
+func reverse(x int) int {
     
 }
 // @lc code=end
@@ -15,15 +15,19 @@ func containsDuplicate(nums []int) bool {
 
 /*
 // @lcpr case=start
-// [1,2,3,1]\n
+// 123\n
 // @lcpr case=end
 
 // @lcpr case=start
-// [1,2,3,4]\n
+// -123\n
 // @lcpr case=end
 
 // @lcpr case=start
-// [1,1,1,3,3,4,3,2,4,2]\n
+// 120\n
+// @lcpr case=end
+
+// @lcpr case=start
+// 0\n
 // @lcpr case=end
 
  */

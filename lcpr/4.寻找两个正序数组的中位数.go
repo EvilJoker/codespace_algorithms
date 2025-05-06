@@ -7,7 +7,11 @@
 
 // @lc code=start
 func findMedianSortedArrays(nums1 []int, nums2 []int) float64 {
-	// 暴力： 合并两个数组，找出中间两个数
+	// 解法1：暴力解法
+	// 1. 合并两个有序数组
+	// 2. 对合并后的数组进行排序
+	// 3. 根据数组长度奇偶性返回中位数
+	// 时间复杂度：O((m+n)log(m+n))，空间复杂度：O(m+n)
 	merged := append(nums1, nums2...)
 	sort.Ints(merged)
 

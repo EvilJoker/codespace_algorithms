@@ -6,30 +6,31 @@
  */
 package main
 
-import (
-	"math"
-)
-
 // @lc code=start
 func maxArea(height []int) int {
-	// 思路： 贪心，总是向比较高的一段移动
+	// 解题思路：双指针法
+	// 1. 使用左右两个指针从数组两端向中间移动
+	// 2. 每次移动高度较小的指针，因为移动高度较大的指针一定会导致面积减小
+	// 3. 在移动过程中记录最大面积
+	// 时间复杂度：O(n)，空间复杂度：O(1)
 
-	n := len(height)
-	left, end := 0, n-1
+	left, right := 0, len(height)-1
+	maxArea := 0
 
-	max_area := math.MinInt32
+	for left < right {
+		// 计算当前容器的面积
+		area := (right - left) * min(height[left], height[right])
+		maxArea = max(maxArea, area)
 
-	for left < end {
-		max_area = max(max_area, (end-left)*min(height[left], height[end]))
-		if height[left] < height[end] {
+		// 移动高度较小的指针
+		if height[left] < height[right] {
 			left++
 		} else {
-			end--
+			right--
 		}
 	}
 
-	return max_area
-
+	return maxArea
 }
 
 // @lc code=end

@@ -15,43 +15,44 @@
  */
 package main
 
+/*
+思路：
+1. 使用深度优先搜索(DFS)遍历原图
+2. 使用哈希表记录已克隆的节点，避免重复克隆
+3. 对于每个节点：
+   - 如果节点已被克隆，直接返回克隆节点
+   - 如果节点未被克隆，创建新节点并递归克隆其邻居
+4. 最终返回克隆后的图
+*/
+
 func cloneGraph(node *Node) *Node {
-	// sl: 使用dfs ，第一次克隆所有节点，存入 map。完成遍历后。进行第二次遍历，将原先的 neughbors,节点使用 map 替换；。
-	// 改进： 不需要遍历两次, 使用 dfs, 当遍历到没有被clone 的节点，递归遍历。直到所有节点都是 克隆后的节点
 	if node == nil {
 		return nil
 	}
-	visted := map[*Node]*Node{}
 
-	var cloneNode func(head *Node) *Node
+	// 记录已克隆的节点，key为原节点，value为克隆节点
+	clonedNodes := map[*Node]*Node{}
 
-	cloneNode = func(head *Node) *Node {
-		// clone 节点
-		newNode := &Node{Val: head.Val}
-		visted[head] = newNode
-
-		cloneNeighbors := []*Node{}
-
-		for _, neighbor := range head.Neighbors {
-
-			cloned, exist := visted[neighbor]
-			if exist {
-				cloneNeighbors = append(cloneNeighbors, cloned)
-			} else {
-				clone_neighbor := cloneNode(neighbor)
-				cloneNeighbors = append(cloneNeighbors, clone_neighbor)
-			}
-
+	var dfs func(*Node) *Node
+	dfs = func(curr *Node) *Node {
+		// 如果节点已被克隆，直接返回
+		if cloned, exists := clonedNodes[curr]; exists {
+			return cloned
 		}
-		// 复制所有邻接节点
-		newNode.Neighbors = cloneNeighbors
+
+		// 创建新节点
+		newNode := &Node{Val: curr.Val}
+		clonedNodes[curr] = newNode
+
+		// 递归克隆所有邻居节点
+		for _, neighbor := range curr.Neighbors {
+			newNode.Neighbors = append(newNode.Neighbors, dfs(neighbor))
+		}
 
 		return newNode
-
 	}
 
-	return cloneNode(node)
-
+	return dfs(node)
 }
 
 // @lc code=end

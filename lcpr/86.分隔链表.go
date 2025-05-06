@@ -15,25 +15,40 @@ package main
  * }
  */
 func partition(head *ListNode, x int) *ListNode {
-	//sl: 设计两个新头，遍历 head 进行分割，然后拼接
-	dummy1, dummy2 := &ListNode{}, &ListNode{}
-	pre1, pre2 := dummy1, dummy2
+	/*
+	   解题思路：
+	   1. 将链表分成两部分：小于x的节点和大于等于x的节点
+	   2. 使用两个虚拟头节点分别连接这两部分
+	   3. 最后将两部分链表连接起来
 
+	   优化点：
+	   1. 使用虚拟头节点简化操作
+	   2. 原地修改链表，不需要额外空间
+	   3. 保持相对顺序
+	*/
+
+	// 创建两个虚拟头节点
+	lessHead := &ListNode{}
+	greaterHead := &ListNode{}
+	less, greater := lessHead, greaterHead
+
+	// 遍历原链表进行分割
 	for head != nil {
 		if head.Val < x {
-			pre1.Next = head
-			pre1 = pre1.Next
+			less.Next = head
+			less = less.Next
 		} else {
-			pre2.Next = head
-			pre2 = pre2.Next
+			greater.Next = head
+			greater = greater.Next
 		}
 		head = head.Next
 	}
-	pre1.Next = dummy2.Next
-	pre2.Next = nil
 
-	return dummy1.Next
+	// 连接两部分链表
+	less.Next = greaterHead.Next
+	greater.Next = nil
 
+	return lessHead.Next
 }
 
 // @lc code=end

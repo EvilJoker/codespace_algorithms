@@ -9,41 +9,51 @@ package main
 import "strconv"
 
 // @lc code=start
+// 思路：
+// 1. 遍历数组，维护当前区间的起始值 start 和期望的下一个值 end
+// 2. 当实际值不等于期望值时，说明区间断开，需要记录当前区间并开始新区间
+// 3. 最后需要处理最后一个区间
+// 4. 将区间转换为要求的字符串格式
+
 func summaryRanges(nums []int) []string {
-	/*
-		sl: 从每个元素出发，不断累加。如果断档就生成一个新元素。对访问过的元素使用 bool 标记
-	*/
-
-	n := len(nums)
-
-	if n == 0 {
+	// 处理空数组的情况
+	if len(nums) == 0 {
 		return []string{}
 	}
-	res := [][]int{}
 
-	start, end := nums[0], nums[0]
-	for i := 0; i < n; i++ {
-		if end != nums[i] {
-			res = append(res, []int{start, end - 1})
-			start, end = nums[i], nums[i]
+	// 存储所有区间
+	ranges := [][]int{}
+
+	// 初始化第一个区间的起始值
+	start, expectedNext := nums[0], nums[0]
+
+	// 遍历数组寻找连续区间
+	for i := 0; i < len(nums); i++ {
+		if expectedNext != nums[i] {
+			// 区间断开，记录当前区间
+			ranges = append(ranges, []int{start, expectedNext - 1})
+			// 开始新区间
+			start, expectedNext = nums[i], nums[i]
 		}
-		end++
+		expectedNext++
 	}
-	// 最后一步
 
-	res = append(res, []int{start, end - 1})
+	// 处理最后一个区间
+	ranges = append(ranges, []int{start, expectedNext - 1})
 
-	res_strs := []string{}
-	for _, v := range res {
-		if v[0] != v[1] {
-			res_strs = append(res_strs, strconv.Itoa(v[0])+"->"+strconv.Itoa(v[1]))
+	// 将区间转换为字符串格式
+	result := []string{}
+	for _, r := range ranges {
+		if r[0] == r[1] {
+			// 单个数字的情况
+			result = append(result, strconv.Itoa(r[0]))
 		} else {
-			res_strs = append(res_strs, strconv.Itoa(v[0]))
+			// 区间的情况
+			result = append(result, strconv.Itoa(r[0])+"->"+strconv.Itoa(r[1]))
 		}
-
 	}
-	return res_strs
 
+	return result
 }
 
 // @lc code=end

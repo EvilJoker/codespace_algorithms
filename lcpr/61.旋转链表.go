@@ -15,43 +15,55 @@ package main
  * }
  */
 func rotateRight(head *ListNode, k int) *ListNode {
-	//sl: 类似旋转数组，但是旋转链表更简单，找打头尾节点进行拼接。 将末尾k 个节点迁移
+	// 思路：
+	// 1. 特殊情况处理：空链表或k=0时直接返回
+	// 2. 计算链表长度，并对k取模（因为旋转长度超过链表长度时是循环的）
+	// 3. 使用快慢指针找到需要断开的位置：
+	//    - 快指针先走k步
+	//    - 然后快慢指针同时移动，直到快指针到达末尾
+	// 4. 重新连接链表：
+	//    - 原末尾节点指向原头节点
+	//    - 新末尾节点指向nil
+	//    - 返回新的头节点
+
+	// 特殊情况处理
 	if head == nil || k == 0 {
 		return head
 	}
+
+	// 计算链表长度
+	length := 0
+	for curr := head; curr != nil; curr = curr.Next {
+		length++
+	}
+
+	// 对k取模，避免不必要的旋转
+	k = k % length
+	if k == 0 {
+		return head
+	}
+
+	// 使用快慢指针找到断开位置
 	dummy := &ListNode{Next: head}
 	fast, slow := dummy, dummy
 
-	length := 0
-	tmp := head
-	for tmp != nil {
-		length++
-		tmp = tmp.Next
-	}
-	k = k % length
-
-	if head == nil || length == 0 || k == 0 {
-		return head // ✅ 直接返回原链表
-	}
-
+	// 快指针先走k步
 	for i := 0; i < k; i++ {
-		if fast != nil {
-			fast = fast.Next
-		}
+		fast = fast.Next
 	}
-	for fast != nil && fast.Next != nil {
+
+	// 快慢指针同时移动，直到快指针到达末尾
+	for fast.Next != nil {
 		fast = fast.Next
 		slow = slow.Next
 	}
 
-	newtail := slow
-	newhead := slow.Next
-	oldtail := fast
+	// 重新连接链表
+	newHead := slow.Next // 新的头节点
+	slow.Next = nil      // 新的尾节点指向nil
+	fast.Next = head     // 原尾节点指向原头节点
 
-	oldtail.Next = head
-	newtail.Next = nil
-
-	return newhead
+	return newHead
 }
 
 // @lc code=end

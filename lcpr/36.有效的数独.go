@@ -9,17 +9,31 @@ package main
 import "strconv"
 
 // @lc code=start
-func isValidSudoku(board [][]byte) bool {
-	// sl: 按照规则横竖，9宫格各判断一次
+/*
+解题思路：
+1. 数独规则：
+   - 每行数字1-9不能重复
+   - 每列数字1-9不能重复
+   - 每个3x3宫格内数字1-9不能重复
+   - '.'表示空格
 
-	// row + col
+2. 验证方法：
+   - 分别验证行、列、3x3宫格
+   - 使用数组记录已出现的数字
+   - 遇到'.'跳过
+   - 数字范围必须在1-9之间
+   - 重复数字返回false
+*/
+
+func isValidSudoku(board [][]byte) bool {
+	// 验证行和列
 	for i := 0; i < len(board); i++ {
 		if !(rowVerfy(board, i) && colVerfy(board, i)) {
 			return false
 		}
-
 	}
-	// 3*3
+
+	// 验证3x3宫格
 	for i := 0; i < len(board); i += 3 {
 		for j := 0; j < len(board); j += 3 {
 			if !squreVerfy(board, i, j) {
@@ -27,13 +41,11 @@ func isValidSudoku(board [][]byte) bool {
 			}
 		}
 	}
-
 	return true
-
 }
 
+// 验证行
 func rowVerfy(board [][]byte, row int) bool {
-
 	nums := []int{1, 2, 3, 4, 5, 6, 7, 8, 9}
 
 	for i := 0; i < 9; i++ {
@@ -42,28 +54,19 @@ func rowVerfy(board [][]byte, row int) bool {
 			continue
 		}
 		t, _ := strconv.Atoi(c)
-		if board[row][i] < 1 {
+		if t < 1 || t > 9 {
 			return false
 		}
-
-		if t > 9 {
-			return false
-		}
-
 		if nums[t-1] == -1 {
 			return false
 		}
-		// 表示已经被使用
-		nums[t-1] = -1
-
+		nums[t-1] = -1 // 标记数字已使用
 	}
-
 	return true
-
 }
 
+// 验证列
 func colVerfy(board [][]byte, col int) bool {
-
 	nums := []int{1, 2, 3, 4, 5, 6, 7, 8, 9}
 
 	for i := 0; i < 9; i++ {
@@ -72,28 +75,19 @@ func colVerfy(board [][]byte, col int) bool {
 			continue
 		}
 		t, _ := strconv.Atoi(c)
-		if t < 1 {
+		if t < 1 || t > 9 {
 			return false
 		}
-
-		if t > 9 {
-			return false
-		}
-
 		if nums[t-1] == -1 {
 			return false
 		}
-		// 表示已经被使用
-		nums[t-1] = -1
-
+		nums[t-1] = -1 // 标记数字已使用
 	}
-
 	return true
-
 }
 
+// 验证3x3宫格
 func squreVerfy(board [][]byte, row, col int) bool {
-
 	nums := []int{1, 2, 3, 4, 5, 6, 7, 8, 9}
 
 	for i := row; i < row+3; i++ {
@@ -103,21 +97,13 @@ func squreVerfy(board [][]byte, row, col int) bool {
 				continue
 			}
 			t, _ := strconv.Atoi(c)
-
-			if t < 1 {
+			if t < 1 || t > 9 {
 				return false
 			}
-
-			if t > 9 {
-				return false
-			}
-
 			if nums[t-1] == -1 {
 				return false
 			}
-			// 表示已经被使用
-			nums[t-1] = -1
-
+			nums[t-1] = -1 // 标记数字已使用
 		}
 	}
 	return true

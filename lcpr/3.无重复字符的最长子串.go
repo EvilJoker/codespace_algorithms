@@ -9,44 +9,48 @@
 
 package main
 
-import "math"
-
 // @lc code=start
 func lengthOfLongestSubstring(s string) int {
-	/* 思路:滑动窗口,双指针不断滑动
-	1. 维护 hash 判断字符串是否重复
-	2. 当 右指针新加入元素，导致重复时。不断收缩左节点，直到不重复
-	3. 维护 max 值
+	/*
+		解题思路：滑动窗口
+		1. 使用双指针维护一个滑动窗口，窗口内字符不重复
+		2. 使用哈希表记录窗口内字符是否存在
+		3. 右指针不断向右移动，当遇到重复字符时，左指针向右移动直到不重复
+		4. 每次更新窗口大小时，记录最大长度
+		时间复杂度：O(n)，空间复杂度：O(字符集大小)
 	*/
+
+	// 将字符串转换为rune数组，以支持Unicode字符
 	sr := []rune(s)
 	n := len(sr)
-	start, end, max_len := 0, 0, math.MinInt32
-	window := make(map[rune]bool)
 
-	for ; end < n; end++ {
-		// 加入新元素
-		end_c := sr[end]
+	// 初始化变量
+	start := 0                    // 窗口左边界
+	maxLen := 0                   // 最大长度
+	window := make(map[rune]bool) // 记录窗口内字符
 
-		for window[end_c] && start <= end { // 包含重复元素
+	// 右指针不断向右移动
+	for end := 0; end < n; end++ {
+		char := sr[end]
 
-			// 去除新元素
-			start_c := sr[start]
-			window[start_c] = false
+		// 当遇到重复字符时，移动左指针直到不重复
+		for window[char] {
+			// 移除左指针指向的字符
+			window[sr[start]] = false
 			start++
-
 		}
 
-		max_len = max(max_len, end-start+1) // 更新
-		window[end_c] = true
+		// 将当前字符加入窗口
+		window[char] = true
 
+		// 更新最大长度
+		currLen := end - start + 1
+		if currLen > maxLen {
+			maxLen = currLen
+		}
 	}
 
-	if max_len == math.MinInt32 {
-		return 0
-	}
-
-	return max_len
-
+	return maxLen
 }
 
 // @lc code=end

@@ -8,7 +8,9 @@ package main
 
 // @lc code=start
 func longestCommonPrefix(strs []string) string {
-	// 思路： 从第一个字符串开始，逐个字符遍历，直到不符合
+	// 解题思路：
+	// 1. 从第一个字符串开始，逐个字符遍历，直到不符合条件
+	// 2. 时间复杂度：O(n)，空间复杂度：O(1)
 
 	res := ""
 	index := 0

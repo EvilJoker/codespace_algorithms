@@ -1,0 +1,22 @@
+# Started by AICoder, pid:if054k5231992ec140b00a7e50b57f2ec6003607 
+@app.api_path_route('/api/v1/check_container_security')
+def check_container_security(method, api_param, body):
+    """
+    检查容器共享卷的安全性。
+
+    请求方法: POST
+    请求参数: 无
+    请求体: JSON 格式的共享卷路径列表
+
+    返回值:
+    - 200 OK: 如果所有共享卷都已设置 ACL
+    - 400 Bad Request: 如果请求体格式错误或共享卷未设置 ACL
+    """
+    try:
+        share_volumes = json.loads(body)
+        if not check_security_enhanced(share_volumes):
+            return rcm_types.Response_200, 'The share_volumes has not been setfacl yet'
+    except BaseException as e:
+        return rcm_types.Response_400, str(e)
+    return rcm_types.Response_200, rcm_types.Response_Body_OK
+# Ended by AICoder, pid:if054k5231992ec140b00a7e50b57f2ec6003607 

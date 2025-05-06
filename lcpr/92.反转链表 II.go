@@ -15,8 +15,13 @@ package main
  * }
  */
 func reverseBetween(head *ListNode, left int, right int) *ListNode {
-	//sl: 找到前后节点保存，单独翻转中间的
-
+	/*
+		解题思路：
+		1. 使用虚拟头节点简化操作
+		2. 找到需要反转区间的前一个节点
+		3. 使用头插法进行区间反转
+		4. 保持其他节点相对位置不变
+	*/
 	dummy := &ListNode{Next: head}
 	pre := dummy
 	// 寻找前一个节点

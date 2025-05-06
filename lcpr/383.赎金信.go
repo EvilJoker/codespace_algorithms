@@ -7,19 +7,27 @@
 package main
 
 // @lc code=start
+// 思路：使用哈希表记录 magazine 中每个字符的出现次数
+// 遍历 ransomNote 中的每个字符，检查是否能在 magazine 中找到足够的字符
+// 时间复杂度：O(m+n)，空间复杂度：O(k)，其中 m 和 n 分别是 ransomNote 和 magazine 的长度，k 是字符集大小
+
 func canConstruct(ransomNote string, magazine string) bool {
-	//sl: 字段，判断 ransomNote 在不在 magazine 中
-	dict := map[rune]int{}
-	for _, c := range magazine {
-		dict[c]++
+	// charCount 记录 magazine 中每个字符的出现次数
+	charCount := map[rune]int{}
+
+	// 统计 magazine 中每个字符的出现次数
+	for _, char := range magazine {
+		charCount[char]++
 	}
 
-	for _, c := range ransomNote {
-		if dict[c] <= 0 {
+	// 检查 ransomNote 中的每个字符是否能在 magazine 中找到
+	for _, char := range ransomNote {
+		if charCount[char] <= 0 {
 			return false
 		}
-		dict[c]--
+		charCount[char]--
 	}
+
 	return true
 }
 
